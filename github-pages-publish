@@ -9,11 +9,18 @@
 """
 
 import argparse
+import logging
 import os
 
 from pygit2 import Repository, Signature, GIT_FILEMODE_TREE, GIT_FILEMODE_BLOB
 
 __version__ = '0.1'
+
+logger = logging.getLogger('github-pages-publish')
+logger.setLevel(logging.ERROR)
+_ch = logging.StreamHandler()
+_ch.setLevel(logging.INFO)
+logger.addHandler(_ch)
 
 
 def build_tree(repo, dir_path):
@@ -23,8 +30,10 @@ def build_tree(repo, dir_path):
             continue
         f = os.path.join(dir_path, _f)
         if os.path.isdir(f):
+            logger.info('Adding directory: %s' % f)
             tree_builder.insert(_f, build_tree(repo, f), GIT_FILEMODE_TREE)
         elif os.path.isfile(f):
+            logger.info('Adding file: %s' % f)
             with open(f, 'rb') as fp:
                 tree_builder.insert(_f, repo.create_blob(fp.read()),
                                     GIT_FILEMODE_BLOB)
@@ -35,13 +44,18 @@ def build_tree(repo, dir_path):
 
 def create_commit(repository_path, input_path, branch_name, commit_message,
                   cname=None, jekill=False):
+    logger.info('Starting commit: %s; %s -> %s' % (repository_path,
+                                                   input_path,
+                                                   branch_name))
     repo = Repository(repository_path)
     tree_oid = build_tree(repo, input_path)
     tree_builder = repo.TreeBuilder(tree_oid)
     if cname is not None:
+        logger.info('Adding CNAME: %s' % cname)
         tree_builder.insert('CNAME', repo.create_blob('%s\n' % cname),
                             GIT_FILEMODE_BLOB)
     if not jekill:
+        logger.info('Disabling Jekill support')
         tree_builder.insert('.nojekill', repo.create_blob(''),
                             GIT_FILEMODE_BLOB)
     tree_oid = tree_builder.write()
@@ -70,11 +84,14 @@ def main():
                         'website')
     parser.add_argument('-j', '--jekill', action='store_true',
                         help='enable Jekill support')
+    parser.add_argument('-V', '--verbose', action='store_true',
+                        help='increase verbosity')
     parser.add_argument('repository_path', help='repository path')
     parser.add_argument('input_path',
                         help='input directory path, with built files')
-
     args = parser.parse_args()
+    if args.verbose:
+        logger.setLevel(logging.INFO)
     create_commit(args.repository_path, args.input_path, args.branch,
                   args.message, args.cname, args.jekill)
     return 0
