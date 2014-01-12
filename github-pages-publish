@@ -31,7 +31,8 @@ def build_tree(repo, dir_path):
         f = os.path.join(dir_path, _f)
         if os.path.isdir(f):
             logger.info('Adding directory: %s' % f)
-            tree_builder.insert(_f, build_tree(repo, f), GIT_FILEMODE_TREE)
+            tree_builder.insert(_f, build_tree(repo, f).write(),
+                                GIT_FILEMODE_TREE)
         elif os.path.isfile(f):
             logger.info('Adding file: %s' % f)
             with open(f, 'rb') as fp:
@@ -39,7 +40,7 @@ def build_tree(repo, dir_path):
                                     GIT_FILEMODE_BLOB)
         elif os.path.islink(f):  # TODO: support symlinks
             pass
-    return tree_builder.write()
+    return tree_builder
 
 
 def create_commit(repository_path, input_path, branch_name, commit_message,
@@ -48,8 +49,7 @@ def create_commit(repository_path, input_path, branch_name, commit_message,
                                                    input_path,
                                                    branch_name))
     repo = Repository(repository_path)
-    tree_oid = build_tree(repo, input_path)
-    tree_builder = repo.TreeBuilder(tree_oid)
+    tree_builder = build_tree(repo, input_path)
     if cname is not None:
         logger.info('Adding CNAME: %s' % cname)
         tree_builder.insert('CNAME', repo.create_blob('%s\n' % cname),
