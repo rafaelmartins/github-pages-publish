@@ -9,7 +9,7 @@ with open(os.path.join(current_dir, 'README.md')) as fp:
 
 setup(
     name='github-pages-publish',
-    version='0.1.1',
+    version='0.1.2',
     license='BSD',
     description=('A script that commits files from a directory to the '
                  'gh-pages branch of the current Git repository.'),

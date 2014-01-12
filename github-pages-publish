@@ -14,7 +14,7 @@ import os
 
 from pygit2 import Repository, Signature, GIT_FILEMODE_TREE, GIT_FILEMODE_BLOB
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 logger = logging.getLogger('github-pages-publish')
 logger.setLevel(logging.ERROR)
