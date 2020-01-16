@@ -78,8 +78,7 @@ def create_commit(repository_path, input_path, branch_name, commit_message,
 def main():
     parser = argparse.ArgumentParser(description='A script that commits files '
                                      'from a directory to the gh-pages branch '
-                                     'of the current Git repository.',
-                                     version=__version__)
+                                     'of the current Git repository.')
     parser.add_argument('-b', '--branch', default='gh-pages',
                         help='git branch (destination)')
     parser.add_argument('-m', '--message', default='Updated docs.',
@@ -90,6 +89,8 @@ def main():
                         help='enable Jekill support')
     parser.add_argument('-V', '--verbose', action='store_true',
                         help='increase verbosity')
+    parser.add_argument('-v', '--version', action='version',
+                        version=f'%(prog)s {__version__}')
     parser.add_argument('repository_path', help='repository path')
     parser.add_argument('input_path',
                         help='input directory path, with built files')

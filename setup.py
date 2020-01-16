@@ -9,7 +9,7 @@ with open(os.path.join(current_dir, 'README.md')) as fp:
 
 setup(
     name='github-pages-publish',
-    version='0.1.2',
+    version='0.1.3',
     license='BSD',
     description=('A script that commits files from a directory to the '
                  'gh-pages branch of the current Git repository.'),
@@ -25,7 +25,9 @@ setup(
         'Environment :: Console',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     scripts=['github-pages-publish'],
 )
