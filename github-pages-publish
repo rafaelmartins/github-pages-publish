@@ -44,7 +44,7 @@ def build_tree(repo, dir_path):
 
 
 def create_commit(repository_path, input_path, branch_name, commit_message,
-                  cname=None, jekill=False):
+                  cname=None, jekyll=False):
     logger.info('Starting commit: %s; %s -> %s' % (repository_path,
                                                    input_path,
                                                    branch_name))
@@ -54,9 +54,9 @@ def create_commit(repository_path, input_path, branch_name, commit_message,
         logger.info('Adding CNAME: %s' % cname)
         tree_builder.insert('CNAME', repo.create_blob('%s\n' % cname),
                             GIT_FILEMODE_BLOB)
-    if not jekill:
-        logger.info('Disabling Jekill support')
-        tree_builder.insert('.nojekill', repo.create_blob(''),
+    if not jekyll:
+        logger.info('Disabling Jekyll support')
+        tree_builder.insert('.nojekyll', repo.create_blob(''),
                             GIT_FILEMODE_BLOB)
     tree_oid = tree_builder.write()
     author = Signature(repo.config['user.name'], repo.config['user.email'])
@@ -85,8 +85,8 @@ def main():
                         help='git commit message')
     parser.add_argument('-c', '--cname', help='hostname for the GitHub Pages '
                         'website')
-    parser.add_argument('-j', '--jekill', action='store_true',
-                        help='enable Jekill support')
+    parser.add_argument('-j', '--jekyll', action='store_true',
+                        help='enable Jekyll support')
     parser.add_argument('-V', '--verbose', action='store_true',
                         help='increase verbosity')
     parser.add_argument('-v', '--version', action='version',
@@ -98,7 +98,7 @@ def main():
     if args.verbose:
         logger.setLevel(logging.INFO)
     create_commit(args.repository_path, args.input_path, args.branch,
-                  args.message, args.cname, args.jekill)
+                  args.message, args.cname, args.jekyll)
     return 0
 
 
